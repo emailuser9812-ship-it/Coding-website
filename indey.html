@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Live Code Playground</title>
+  <!-- Simple inline favicon (SVG) with credit to Thedark471 -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232a9d8f'/%3E%3Ctext x='50' y='56' font-size='42' font-family='Arial' text-anchor='middle' fill='white'%3ET%3C/text%3E%3C/svg%3E">
+  <style>
+    :root{--bg:#0f1720;--card:#0b1220;--muted:#9aa7b2;--accent:#2a9d8f}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;background:linear-gradient(180deg,#071023 0%,#091526 100%);color:#e6eef3}
+    header{display:flex;gap:12px;align-items:center;padding:18px}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo img{width:48px;height:48px;border-radius:10px}
+    .title{font-size:18px;font-weight:600}
+    .subtitle{font-size:12px;color:var(--muted)}
+    .container{display:grid;grid-template-columns:1fr 360px;gap:16px;padding:18px}
+    .card{background:rgba(255,255,255,0.03);border-radius:12px;padding:12px;min-height:420px}
+    .controls{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+    select,input{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px;border-radius:8px;color:inherit}
+    button{background:var(--accent);color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+    button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+    #editor{height:520px;border-radius:8px;overflow:hidden}
+    .output{height:200px;background:#02121a;border-radius:8px;padding:10px;color:#cfeef0;overflow:auto;font-family:monospace;font-size:13px}
+    footer{padding:14px;color:var(--muted);font-size:13px;text-align:center}
+    .small{font-size:12px;color:var(--muted)}
+    .meta{display:flex;flex-direction:column;gap:8px}
+    label.small{display:block;color:var(--muted);font-size:12px}
+    .note{font-size:12px;color:var(--muted)}
+    a.credit{color:var(--accent);text-decoration:none;font-weight:600}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%232a9d8f'/%3E%3Ctext x='50' y='58' font-size='36' font-family='Arial' text-anchor='middle' fill='white'%3ET%3C/text%3E%3C/svg%3E" alt="icon"/>
+      <div>
+        <div class="title">Live Code Playground</div>
+        <div class="subtitle">Edit code, run JavaScript or Python, change filename, download files</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <div class="controls">
+        <label class="small">Language:</label>
+        <select id="lang">
+          <option value="javascript">JavaScript</option>
+          <option value="python">Python</option>
+          <option value="html">HTML</option>
+          <option value="css">CSS</option>
+          <option value="text">Plain Text</option>
+        </select>
+
+        <label class="small">Filename:</label>
+        <input id="filename" placeholder="script.js" style="min-width:160px" />
+
+        <button id="run">Run</button>
+        <button id="save" class="secondary">Download</button>
+        <button id="clear">Clear Output</button>
+      </div>
+
+      <div id="editor">// Choose a language and write code here.
+console.log('Hello from JavaScript!');</div>
+
+      <div style="margin-top:12px">
+        <div class="small">Output / Console (errors shown in red):</div>
+        <div id="output" class="output"></div>
+      </div>
+
+    </div>
+
+    <div class="card meta">
+      <div>
+        <h3 style="margin:0 0 8px 0">Settings & Info</h3>
+        <div class="note">Supported run targets: <strong>JavaScript (in-browser)</strong> and <strong>Python (via Pyodide)</strong>. For other languages you can edit and download files but execution is not available in this static page.</div>
+      </div>
+
+      <div style="margin-top:12px">
+        <label class="small">Preload templates:</label>
+        <select id="template">
+          <option value="js-hello">JS: Console Hello</option>
+          <option value="py-hello">Python: Print Hello</option>
+          <option value="html-boiler">HTML: Boilerplate</option>
+          <option value="css-boiler">CSS: Boilerplate</option>
+        </select>
+        <button id="loadTemplate" class="secondary" style="margin-left:8px">Load</button>
+      </div>
+
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.04);margin:12px 0">
+
+      <div>
+        <div class="small">How errors are shown:</div>
+        <ul class="small" style="padding-left:18px">
+          <li>JavaScript: runtime exceptions captured and printed with stack traces.</li>
+          <li>Python: exceptions from Pyodide are captured and printed.</li>
+          <li>Other languages: no runtime checking in this static page.</li>
+        </ul>
+      </div>
+
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.04);margin:12px 0">
+
+      <div>
+        <div class="small">Icon credit</div>
+        <div class="note">Icon artwork made by <a class="credit" href="#" onclick="alert('Please credit Thedark471 on Discord when reusing this icon')">Thedark471 on Discord</a></div>
+      </div>
+
+      <div style="margin-top:auto;padding-top:12px">
+        <div class="small">Note: This is a single-file static app — it loads external libraries from CDNs to enable Python and editor features.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; <span id="year"></span> Live Code Playground. All rights reserved. Icon by Thedark471 on Discord.
+  </footer>
+
+  <!-- Load ACE editor from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/ace.js" integrity="" crossorigin="anonymous"></script>
+  <!-- Pyodide for Python execution -->
+  <script>
+    // NOTE: this page will attempt to load Pyodide from the official CDN. If offline, Python won't run.
+    let pyodide = null;
+    let pyodideLoading = false;
+
+    const editor = ace.edit("editor", {mode: "ace/mode/javascript",theme: "ace/theme/twilight"});
+    editor.setOptions({fontSize:14,showPrintMargin:false,wrap:true});
+
+    const langSelect = document.getElementById('lang');
+    const runBtn = document.getElementById('run');
+    const saveBtn = document.getElementById('save');
+    const clearBtn = document.getElementById('clear');
+    const filenameInput = document.getElementById('filename');
+    const outputEl = document.getElementById('output');
+    const template = document.getElementById('template');
+    const loadTemplate = document.getElementById('loadTemplate');
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function setEditorMode(lang){
+      switch(lang){
+        case 'javascript': editor.session.setMode('ace/mode/javascript'); break;
+        case 'python': editor.session.setMode('ace/mode/python'); break;
+        case 'html': editor.session.setMode('ace/mode/html'); break;
+        case 'css': editor.session.setMode('ace/mode/css'); break;
+        default: editor.session.setMode('ace/mode/text');
+      }
+    }
+
+    langSelect.addEventListener('change', (e)=>{
+      setEditorMode(e.target.value);
+      // Suggest filename extension
+      const cur = filenameInput.value || '';
+      if(!cur.includes('.')){
+        const ext = {
+          javascript: 'js', python: 'py', html:'html', css:'css', text:'txt'
+        }[e.target.value] || 'txt';
+        filenameInput.placeholder = 'script.'+ext;
+      }
+    });
+
+    loadTemplate.addEventListener('click', ()=>{
+      const t = template.value;
+      if(t==='js-hello'){ langSelect.value='javascript'; setEditorMode('javascript'); editor.setValue("// JavaScript example\nconsole.log('Hello from JavaScript!');\nthrow new Error('Example error');", -1);} 
+      if(t==='py-hello'){ langSelect.value='python'; setEditorMode('python'); editor.setValue("# Python example\nprint('Hello from Python!')\nraise Exception('Example error')", -1);} 
+      if(t==='html-boiler'){ langSelect.value='html'; setEditorMode('html'); editor.setValue(`<!doctype html>\n<html>\n  <head><meta charset=\"utf-8\"></head>\n  <body>\n    <h1>Hello</h1>\n  </body>\n</html>`, -1);} 
+      if(t==='css-boiler'){ langSelect.value='css'; setEditorMode('css'); editor.setValue(`body { font-family: system-ui, sans-serif; }`, -1);} 
+    });
+
+    function appendOutput(msg, type='log'){
+      const pre = document.createElement('div');
+      pre.textContent = msg;
+      pre.style.whiteSpace = 'pre-wrap';
+      if(type==='error') pre.style.color = '#ff6b6b';
+      outputEl.appendChild(pre);
+      outputEl.scrollTop = outputEl.scrollHeight;
+    }
+
+    clearBtn.addEventListener('click', ()=>{outputEl.textContent='';});
+
+    saveBtn.addEventListener('click', ()=>{
+      const code = editor.getValue();
+      let name = filenameInput.value.trim() || 'script';
+      const lang = langSelect.value;
+      const ext = {javascript:'js', python:'py', html:'html', css:'css', text:'txt'}[lang] || 'txt';
+      if(!name.endsWith('.'+ext)) name = name + '.' + ext;
+      const blob = new Blob([code], {type: 'text/plain'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    runBtn.addEventListener('click', async ()=>{
+      const lang = langSelect.value;
+      const code = editor.getValue();
+      outputEl.textContent='';
+      appendOutput('--- Running ('+lang+') ---');
+
+      if(lang==='javascript'){
+        // capture console
+        const originalConsole = console.log;
+        try{
+          console.log = (...args)=>{ appendOutput(args.map(a=>String(a)).join(' ')); originalConsole.apply(console,args); };
+          try{
+            const fn = new Function(code);
+            const res = fn();
+            if(res instanceof Promise){
+              res.catch(e=>{ appendOutput(String(e.stack||e),'error')});
+            }
+          } catch(e){
+            appendOutput(String(e.stack||e),'error');
+          }
+        } finally { console.log = originalConsole; }
+      } else if(lang==='python'){
+        if(!pyodide && !pyodideLoading){
+          pyodideLoading = true;
+          appendOutput('Loading Python runtime (Pyodide) — this may take a few seconds...');
+          try{
+            // load pyodide
+            self.languagePluginUrl = 'https://cdn.jsdelivr.net/pyodide/v0.23.4/full/';
+            import('https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js').then(async (module)=>{
+              pyodide = await loadPyodide({indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.23.4/full/'});
+              pyodideLoading = false;
+              appendOutput('Pyodide loaded. Running your code...');
+              runPython(code);
+            }).catch(err=>{pyodideLoading=false; appendOutput('Failed to load Pyodide: '+err,'error');});
+          } catch(err){ pyodideLoading=false; appendOutput('Failed to start Pyodide: '+err,'error'); }
+        } else if(pyodideLoading){
+          appendOutput('Pyodide is still loading — try again in a moment.');
+        } else {
+          runPython(code);
+        }
+      } else {
+        appendOutput('Execution not supported for this language in the static playground. You can download the file and run it locally.');
+      }
+    });
+
+    async function runPython(code){
+      try{
+        // redirect stdout & stderr
+        let stdout = '';
+        pyodide.setStdout({batched: (s)=>{ stdout += s; appendOutput(s); }});
+        pyodide.setStderr({batched: (s)=>{ appendOutput(s,'error'); }});
+        const result = await pyodide.runPythonAsync(code);
+        if(result !== undefined){ appendOutput(String(result)); }
+      } catch(err){
+        appendOutput(String(err),'error');
+      }
+    }
+
+    // Set default filename placeholder
+    filenameInput.placeholder = 'script.js';
+
+    // Initial mode
+    setEditorMode('javascript');
+
+    // Small convenience: Ctrl+Enter to run
+    window.addEventListener('keydown', (e)=>{ if(e.ctrlKey && e.key==='Enter'){ runBtn.click(); } });
+
+  </script>
+</body>
+</html>
